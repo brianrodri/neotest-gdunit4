@@ -1,0 +1,103 @@
+*neotest-gdunit4.txt*  A neotest adapter for GdUnit4
+
+===============================================================================
+CONTENTS                                                   *neotest-gdunit4-toc*
+
+  1. Introduction ................ |neotest-gdunit4-introduction|
+  2. Requirements ................ |neotest-gdunit4-requirements|
+  3. Installation ................ |neotest-gdunit4-installation|
+  4. Usage ....................... |neotest-gdunit4-usage|
+  5. Configuration ............... |neotest-gdunit4-configuration|
+  6. Troubleshooting ............. |neotest-gdunit4-troubleshooting|
+  7. License ..................... |neotest-gdunit4-license|
+
+===============================================================================
+1. INTRODUCTION                                   *neotest-gdunit4-introduction*
+
+neotest-gdunit4 is an adapter for neotest that integrates with GdUnit4, a
+testing framework for the Godot game engine. It allows you to discover and run
+GdUnit4 tests directly from Neovim.
+
+===============================================================================
+2. REQUIREMENTS                                   *neotest-gdunit4-requirements*
+
+- Neovim >= 0.7.0
+- neotest (https://github.com/nvim-neotest/neotest)
+- plenary.nvim (https://github.com/nvim-lua/plenary.nvim)
+- Godot with GdUnit4 installed (https://github.com/MikeSchulze/gdUnit4)
+
+===============================================================================
+3. INSTALLATION                                   *neotest-gdunit4-installation*
+
+Using packer.nvim:
+>
+    use({
+      "nvim-neotest/neotest",
+      requires = {
+        "nvim-lua/plenary.nvim",
+        "brianrodri/neotest-gdunit4",
+        -- your other adapters...
+      },
+      config = function()
+        require("neotest").setup({
+          adapters = {
+            require("neotest-gdunit4").setup({
+              host = "localhost",
+              port = 31002,
+            })
+          }
+        })
+      end
+    })
+<
+
+===============================================================================
+4. USAGE                                               *neotest-gdunit4-usage*
+
+Before running tests, you need to start the GdUnit4 server in your Godot
+project:
+>
+    godot --headless --script res://addons/gdUnit4/src/core/server/GdUnitServer.gd 31002
+<
+
+Then you can use neotest commands to discover and run tests:
+>
+    :lua require("neotest").run.run() -- Run nearest test
+    :lua require("neotest").run.run(vim.fn.expand("%")) -- Run current file
+    :lua require("neotest").run.run(vim.fn.getcwd()) -- Run all tests in project
+    :lua require("neotest").summary.toggle() -- Toggle summary panel
+<
+
+===============================================================================
+5. CONFIGURATION                                 *neotest-gdunit4-configuration*
+
+neotest-gdunit4 accepts the following options:
+>
+    require("neotest").setup({
+      adapters = {
+        require("neotest-gdunit4").setup({
+          host = "localhost", -- GdUnit4 server host (default: "localhost")
+          port = 31002,       -- GdUnit4 server port (default: 31002)
+          log_level = "info", -- Log level (default: "info")
+        })
+      }
+    })
+<
+
+===============================================================================
+6. TROUBLESHOOTING                             *neotest-gdunit4-troubleshooting*
+
+If you encounter any issues:
+
+1. Make sure the GdUnit4 server is running on the specified host and port
+2. Check that your Godot scripts are recognized as test files by GdUnit4
+3. Enable logging with `log_level = "debug"` for more detailed output
+
+Common issues:
+- Connection refused: The GdUnit4 server is not running or not accessible
+- No tests found: Your test files do not match the GdUnit4 test format
+
+===============================================================================
+7. LICENSE                                           *neotest-gdunit4-license*
+
+MIT License
